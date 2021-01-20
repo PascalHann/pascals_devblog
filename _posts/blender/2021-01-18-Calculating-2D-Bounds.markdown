@@ -12,7 +12,7 @@ We want to achieve a renderer that only rerenders affected parts of the image wh
 For this, we need the bounding box of the object previous of the current syncing step in addition to the current one.  
 We added a field to **/render/object.h**:
 
-{% highlight cpp linenos %}
+{% highlight c++ %}
 {% raw %}
 BoundBox old_bounds;
 {% endraw %}
@@ -21,7 +21,7 @@ BoundBox old_bounds;
 We populate this field in the method **/blender/blender_session.cpp#synchronize**
 before the objects get synced. We simply replace the old_bounds with the current bounds, which in turn will be overwritten with the future bounds during the following syncing step.
 
-{% highlight cpp linenos %}
+{% highlight c++ %}
 {% raw %}
 /* Update old bounds before overwriting new bounds */
 for (Object *object : scene->objects) {
@@ -35,7 +35,7 @@ for (Object *object : scene->objects) {
 The bounds we store in **/render/object.h** are 3D world space bounding boxes. In order to update the corresponding parts of the screen, we need to calculate the 2D pixel space bounding boxes from them.  
 To do so, we added a method to the object class:
 
-{% highlight cpp linenos %}
+{% highlight c++ %}
 {% raw %}
 /* Compute 2D raster space bounding box from 3D world space Bounding Box */
 BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worldtoraster)
