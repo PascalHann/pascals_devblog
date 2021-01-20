@@ -13,21 +13,17 @@ For this, we need the bounding box of the object previous of the current syncing
 We added a field to **/render/object.h**:
 
 {% highlight c++ %}
-{% raw %}
 BoundBox old_bounds;
-{% endraw %}
 {% endhighlight %}
 
 We populate this field in the method **/blender/blender_session.cpp#synchronize**
 before the objects get synced. We simply replace the old_bounds with the current bounds, which in turn will be overwritten with the future bounds during the following syncing step.
 
 {% highlight c++ %}
-{% raw %}
 /* Update old bounds before overwriting new bounds */
 for (Object *object : scene->objects) {
   object->old_bounds = object->bounds;
 }
-{% endraw %}
 {% endhighlight %}
 
 ## Calculating 2D Bounds
@@ -36,7 +32,6 @@ The bounds we store in **/render/object.h** are 3D world space bounding boxes. I
 To do so, we added a method to the object class:
 
 {% highlight c++ %}
-{% raw %}
 /* Compute 2D raster space bounding box from 3D world space Bounding Box */
 BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worldtoraster)
 {
@@ -74,7 +69,6 @@ BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worl
 
   return result;
 }
-{% endraw %}
 {% endhighlight %}
 
 This simply extracts the corners of the 3D bounding box and makes use of the already implemented method "transform_perspective" to calculate a 2D screen space bounding box.
