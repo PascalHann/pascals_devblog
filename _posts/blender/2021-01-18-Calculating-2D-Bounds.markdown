@@ -31,7 +31,7 @@ for (Object *object : scene->objects) {
 The bounds we store in **/render/object.h** are 3D world space bounding boxes. In order to update the corresponding parts of the screen, we need to calculate the 2D pixel space bounding boxes from them.  
 To do so, we added a method to the object class:
 
-{% highlight c++ %}
+{% highlight c++ %}{% raw %}
 /* Compute 2D raster space bounding box from 3D world space Bounding Box */
 BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worldtoraster)
 {
@@ -69,7 +69,7 @@ BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worl
 
   return result;
 }
-{% endhighlight %}
+{% endraw %}{% endhighlight %}
 
 This simply extracts the corners of the 3D bounding box and makes use of the already implemented method "transform_perspective" to calculate a 2D screen space bounding box.
 
