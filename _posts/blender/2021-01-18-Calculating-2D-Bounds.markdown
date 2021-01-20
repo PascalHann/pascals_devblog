@@ -12,28 +12,37 @@ We want to achieve a renderer that only rerenders affected parts of the image wh
 For this, we need the bounding box of the object previous of the current syncing step in addition to the current one.  
 We added a field to **/render/object.h**:
 
+{% highlight cpp %}
+{% raw %}
 ```C++
-  BoundBox old_bounds;
+BoundBox old_bounds;
 ```
+{% endraw %}
+{% endhighlight %}
 
 We populate this field in the method **/blender/blender_session.cpp#synchronize**
 before the objects get synced. We simply replace the old_bounds with the current bounds, which in turn will be overwritten with the future bounds during the following syncing step.
 
+{% highlight cpp %}
+{% raw %}
 ```C++
-  /* Update old bounds before overwriting new bounds */
-  for (Object *object : scene->objects) {
-    object->old_bounds = object->bounds;
-  }
+/* Update old bounds before overwriting new bounds */
+for (Object *object : scene->objects) {
+  object->old_bounds = object->bounds;
+}
 ```
+{% endraw %}
+{% endhighlight %}
 
 ## Calculating 2D Bounds
 
 The bounds we store in **/render/object.h** are 3D world space bounding boxes. In order to update the corresponding parts of the screen, we need to calculate the 2D pixel space bounding boxes from them.  
 To do so, we added a method to the object class:
 
+{% highlight cpp %}
 {% raw %}
 ```C++
-  /* Compute 2D raster space bounding box from 3D world space Bounding Box */
+/* Compute 2D raster space bounding box from 3D world space Bounding Box */
 BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worldtoraster)
 {
   BoundBox2D result = BoundBox2D();
@@ -72,9 +81,12 @@ BoundBox2D Object::compute_raster_bounds(BoundBox bbox, ProjectionTransform worl
 }
 ```
 {% endraw %}
+{% endhighlight %}
 
 This simply extracts the corners of the 3D bounding box and makes use of the already implemented method "transform_perspective" to calculate a 2D screen space bounding box.
 
 ## Next steps
 
 Looking forward, we will try to feed the information we prepared into the rendering logic, a colleague of us is currently modifieng, so it can render only parts of the image rather then the whole.
+
+Follow the development on our [git repository](https://github.com/PascalHann/BA_WS2020/tree/feature/store_previous_geometry).
